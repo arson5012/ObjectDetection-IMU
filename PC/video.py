@@ -23,10 +23,13 @@ import copy
 
 class sendcode():
     def __init__(self):
-        self.clients = []  # 접속한 클라이언트를 담당하는 Client 객체 저장
-    def addClient(self, c):  # 클라이언트 하나를 추가
+        self.clients = []  
+        # 접속한 클라이언트를 담당하는 Client 객체 저장
+    def addClient(self, c):  
+        # 클라이언트 하나를 추가
         self.clients.append(c)
-    def delClent(self, c):  # 클라이언트 하나를 삭제
+    def delClent(self, c):  
+        # 클라이언트 하나를 삭제
         self.clients.remove(c)
     def sendAllClients(self, msg):
         for c in self.clients:
@@ -45,7 +48,7 @@ class sendClient():
             msg = self.soc.send(data2)
 
             if msg == 'stop':
-                self.sendMsg(msg)  # 클라이언트쪽의 리시브 쓰레드 종료하라고..
+                self.sendMsg(msg) 
                 print("소켓 종료")
                 break
 
@@ -55,7 +58,7 @@ class sendClient():
         self.sendcode.delClent(self)
         self.sendcode.sendAllClients(self.id + '_소켓 종료')
 
-    def sendMsg(self, msg):  # 담당한 클라이언트 1명에게만 메시지 전송
+    def sendMsg(self, msg):
         self.soc.sendall(msg.encode(encoding='utf-8'))
 
     def run(self):
