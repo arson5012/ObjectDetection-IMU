@@ -21,26 +21,23 @@ import openpyxl
 import copy
 
 
-class sendcode():  # 채팅방
+class sendcode():
     def __init__(self):
-        self.clients = []  # 접속한 클라이언트를 담당하는 ChatClient 객체 저장
-
-    def addClient(self, c):  # 클라이언트 하나를 채팅방에 추가
+        self.clients = []  # 접속한 클라이언트를 담당하는 Client 객체 저장
+    def addClient(self, c):  # 클라이언트 하나를 추가
         self.clients.append(c)
-
-    def delClent(self, c):  # 클라이언트 하나를 채팅방에서 삭제
+    def delClent(self, c):  # 클라이언트 하나를 삭제
         self.clients.remove(c)
-
     def sendAllClients(self, msg):
         for c in self.clients:
             c.sendMsg(msg)
 
 
-class ChatClient():  # 텔레 마케터: 클라이언트 1명이 전송한 메시지를 받고, 받은 메시지를 다시 되돌려줌
+class sendClient():
     def __init__(self, id, soc, ss):
         self.id = id  # 클라이언트 id
-        self.soc = soc  # 담당 클라이언트와 1:1 통신할 소켓
-        self.sendcode = ss  # 채팅방 객체
+        self.soc = soc
+        self.sendcode = ss
 
     def recvMsg(self):
         while True:
@@ -224,3 +221,4 @@ class video(QObject):
                     c_soc.close()
                     s_soc.close()
                     break
+
