@@ -21,46 +21,44 @@ import openpyxl
 import copy
 
 
-class sendcode(): #채팅방
+class sendcode():  # 채팅방
     def __init__(self):
-        self.clients = []#접속한 클라이언트를 담당하는 ChatClient 객체 저장
+        self.clients = []  # 접속한 클라이언트를 담당하는 ChatClient 객체 저장
 
-    def addClient(self, c):#클라이언트 하나를 채팅방에 추가
+    def addClient(self, c):  # 클라이언트 하나를 채팅방에 추가
         self.clients.append(c)
 
-    def delClent(self, c):#클라이언트 하나를 채팅방에서 삭제
+    def delClent(self, c):  # 클라이언트 하나를 채팅방에서 삭제
         self.clients.remove(c)
 
     def sendAllClients(self, msg):
         for c in self.clients:
             c.sendMsg(msg)
 
-class ChatClient():#텔레 마케터: 클라이언트 1명이 전송한 메시지를 받고, 받은 메시지를 다시 되돌려줌
-    def __init__(self, id, soc, r):
-        self.id = id    #클라이언트 id
-        self.soc = soc  #담당 클라이언트와 1:1 통신할 소켓
-        self.sendcode = r   #채팅방 객체
+
+class ChatClient():  # 텔레 마케터: 클라이언트 1명이 전송한 메시지를 받고, 받은 메시지를 다시 되돌려줌
+    def __init__(self, id, soc, ss):
+        self.id = id  # 클라이언트 id
+        self.soc = soc  # 담당 클라이언트와 1:1 통신할 소켓
+        self.sendcode = ss  # 채팅방 객체
 
     def recvMsg(self):
         while True:
             data2 = self.soc.recv(1024)
-            msg =  self.soc.send(data2)
+            msg = self.soc.send(data2)
 
             if msg == 'stop':
-                self.sendMsg(msg) # 클라이언트쪽의 리시브 쓰레드 종료하라고..
-                print("1 소켓 종료")
+                self.sendMsg(msg)  # 클라이언트쪽의 리시브 쓰레드 종료하라고..
+                print("소켓 종료")
                 break
 
-
-            msg = self.id+': ' + (str(msg))
+            msg = self.id + ': ' + (str(msg))
             self.sendcode.sendAllClients(msg)
 
-
         self.sendcode.delClent(self)
-        self.sendcode.sendAllClients(self.id+'_소켓 종료')
+        self.sendcode.sendAllClients(self.id + '_소켓 종료')
 
-
-    def sendMsg(self, msg): #담당한 클라이언트 1명에게만 메시지 전송
+    def sendMsg(self, msg):  # 담당한 클라이언트 1명에게만 메시지 전송
         self.soc.sendall(msg.encode(encoding='utf-8'))
 
     def run(self):
@@ -72,21 +70,17 @@ class video(QObject):
     sendImage = pyqtSignal(QImage)
     sendImage2 = pyqtSignal(QImage)
 
-
     def __init__(self, widget, size):
         super().__init__()
         self.widget = widget
         self.size = size
         self.sendImage.connect(self.widget.recvImage)
         self.sendImage2.connect(self.widget.recvImage_2)
-        self.room = sendcode()
+        self.Separation= sendcode()
         self.server_soc = None
-
-
 
     def setOption(self, option):
         self.option = option
-
 
     def startCam(self):
         self.bThread = True
@@ -96,8 +90,6 @@ class video(QObject):
     def stopCam(self):
         self.bThread = False
         print("소켓 통신 종료")
-
-
 
     def threadFunc(self):
         if self.bThread == True:
@@ -118,7 +110,7 @@ class video(QObject):
             layer_names = net.getLayerNames()
             output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
-            ip = '202.31.150.50'  # ip 주소
+            ip = 'IPV4 주소'  # ip 주소
             port = 3333  # port 번호
 
             server_soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -136,10 +128,8 @@ class video(QObject):
 
             cnt = 0
 
-
             data = b""  # 수신한 데이터를 넣을 변수
             payload_size = struct.calcsize(">L")
-
 
             while True:
                 # 프레임 수신
@@ -153,20 +143,17 @@ class video(QObject):
                 frame_data = data[:msg_size]
                 data = data[msg_size:]
 
-                frame = pickle.loads(frame_data, fix_imports=True,
-                                     encoding="bytes")  # 직렬화되어 있는 binary file로 부터 객체로 역직렬화
+                frame = pickle.loads(frame_data, fix_imports=True,encoding="bytes")  # 직렬화되어 있는 binary file로 부터 객체로 역직렬화
                 frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)  # 프레임 디코딩
                 frame = cv2.resize(frame, None, fx=0.4, fy=0.4)
-                cf=copy.deepcopy(frame)
-
+                cf = copy.deepcopy(frame)
 
                 msg1 = s_soc.recv(1024)
                 id2 = msg1.decode()
-
                 print(id2)
-                ####################################지울 곳###############################################
-                if id2 == '움직임' :
-                    cnt =1
+
+                if id2 == '움직임':
+                    cnt = 1
                 if cnt == 1 and id2 == '정지':
 
                     height, width, channels = cf.shape
@@ -219,9 +206,7 @@ class video(QObject):
                     except cv2.error:
                         pass
 
-                    cnt =0
-
-
+                    cnt = 0
 
                 try:
                     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -239,80 +224,3 @@ class video(QObject):
                     c_soc.close()
                     s_soc.close()
                     break
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            """if data_sw == "b'stop'":
-
-                        while len(data) < payload_size:
-                            data += conn.recv(4096)
-                        packed_msg_size = data[:payload_size]
-                        data = data[payload_size:]
-                        msg_size = struct.unpack(">L", packed_msg_size)[0]
-                        while len(data) < msg_size:
-                            data += conn.recv(4096)
-                        frame_data = data[:msg_size]
-                        data = data[msg_size:]
-
-                        frame = pickle.loads(frame_data, fix_imports=True,
-                                             encoding="bytes")  # 직렬화되어 있는 binary file로 부터 객체로 역직렬화
-                        frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)  # 프레임 디코딩
-                        frame = cv2.resize(frame, None, fx=0.4, fy=0.4)
-                        height, width, channels = frame.shape
-
-                        blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
-                        net.setInput(blob)
-                        outs = net.forward(output_layers)
-
-                        class_ids = []
-                        confidences = []
-                        boxes = []
-                        for out in outs:
-                            for detection in out:
-                                scores = detection[5:]
-                                class_id = np.argmax(scores)
-                                confidence = scores[class_id]
-                                if confidence > 0.5:
-                                    center_x = int(detection[0] * width)
-                                    center_y = int(detection[1] * height)
-                                    w = int(detection[2] * width)
-                                    h = int(detection[3] * height)
-                                    x = int(center_x - w / 2)
-                                    y = int(center_y - h / 2)
-                                    boxes.append([x, y, w, h])
-                                    confidences.append(float(confidence))
-                                    class_ids.append(class_id)
-
-                        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
-
-                        font = cv2.FONT_HERSHEY_PLAIN
-                        for i in range(len(boxes)):
-                            x, y, w, h = boxes[i]
-                            label = str(classes[class_ids[i]])
-                            color = (255, 0, 0)
-                            cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-                            cv2.putText(frame, label, (x, y + 30), font, 3, color, 3)
-
-                        # print("Frame Size : {}".format(msg_size))  # 프레임 크기 출력
-                        # 역직렬화(de-serialization) : 직렬화된 파일이나 바이트를 원래의 객체로 복원하는 것
-
-                        rgb2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                        h1, w1, ch1 = rgb2.shape
-                        bytesPerLine = ch1 * w1
-                        img2 = QImage(rgb2.data, w1, h1, bytesPerLine, QImage.Format_RGB888)
-                        resizedImg2 = img2.scaled(self.size.width(), self.size.height(), Qt.KeepAspectRatio)
-                        self.sendImage2.emit(resizedImg2)""" #if 문 추가
-
