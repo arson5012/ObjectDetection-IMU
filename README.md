@@ -40,7 +40,8 @@
  
  * **구동 영상**  
   
- ![구동 영상]()
+ ![구동 영상](https://user-images.githubusercontent.com/74953111/144014295-1fd533b1-c20d-47d7-9dc9-b5663fc72c81.gif)
+
 
  ---
 
