@@ -39,6 +39,16 @@
  <br/>
  
  * **구동 영상**  
+ >구동 환경 
+ >* PC  
+ >CPU: Intel I7-10700K  
+ >RAM: 16GB  
+ >GPU: NVIDIA RTX 3080  
+ >LAN: 500Mbps  
+ >
+ >* Raspberry Pi 4  
+ >RAM: 8GB  
+ >WIFI: 5GHz  
   
  ![구동 영상](https://user-images.githubusercontent.com/74953111/144014295-1fd533b1-c20d-47d7-9dc9-b5663fc72c81.gif) \
  ![구동 영상2](https://user-images.githubusercontent.com/74953111/144029905-4d2bd5b5-ec4e-40db-9a59-3814b4d803e4.gif)
