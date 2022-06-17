@@ -49,7 +49,7 @@
  >* Raspberry Pi 4  
  >RAM: 8GB  
  >WIFI: 5GHz  
- >USB PORT: USB Camera
+ >USB PORT: USB Camera  
  >SENSOR: MPU-9250
  >  
  >![구동](https://user-images.githubusercontent.com/74953111/144050991-e74c9143-4240-4c71-bacc-f2a1fb112f76.gif)  \
